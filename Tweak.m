@@ -17,12 +17,22 @@ NSInteger count = 0;
                 num = result - 2;
             NSMutableArray *data = [NSMutableArray arrayWithCapacity:num];
             for (NSInteger i = 0; i < num; i++) {
-                NSString *size = [[(UITableViewCell *)[self tableView:view cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]] detailTextLabel] text];
-                NSArray *parts = [size componentsSeparatedByString:@" "];
-                if ([parts count] == 2)
-                    [data addObject:[[Entry alloc] initWithIndex:i data:@([parts[0] floatValue] * [@{@"KB": @1, @"MB": @1000, @"GB": @1000000, @"TB": @1000000000}[parts[1]] intValue])]];
-                else
-                    [data addObject:[[Entry alloc] initWithIndex:i data:@0]];
+                NSString *sizeString = [[(UITableViewCell *)[self tableView:view cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]] detailTextLabel] text];
+                float size = [sizeString floatValue];
+                switch ([sizeString characterAtIndex:[sizeString length] - 2]) {
+                    case 'K':
+                        size *= 1024;
+                        break;
+                    case 'M':
+                        size *= 1024 * 1024;
+                        break;
+                    case 'G':
+                        size *= 1024 * 1024 * 1024;
+                        break;
+                    case 'T':
+                        size *= 1024 * 1024 * 1024 * 1024;
+                }
+                [data addObject:[[Entry alloc] initWithIndex:i data:@(size)]];
             }
             map = [data sortedArrayUsingComparator:^NSComparisonResult(Entry *a, Entry *b) {
                 return [b.data compare: a.data];
@@ -38,12 +48,6 @@ NSInteger count = 0;
         return %orig(view, [NSIndexPath indexPathForRow:((Entry *)map[indexPath.row]).index inSection:indexPath.section]);
     else
         return %orig(view, indexPath);
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    %orig(animated);
-    map = nil;
-    count = 0;
 }
 
 %end
