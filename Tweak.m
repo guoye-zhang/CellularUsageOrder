@@ -19,19 +19,18 @@ NSInteger count = 0;
             for (NSInteger i = 0; i < num; i++) {
                 NSString *sizeString = [[(UITableViewCell *)[self tableView:view cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]] detailTextLabel] text];
                 float size = [sizeString floatValue];
-                switch ([sizeString characterAtIndex:[sizeString length] - 2]) {
-                    case 'K':
-                        size *= 1024;
-                        break;
-                    case 'M':
-                        size *= 1024 * 1024;
-                        break;
-                    case 'G':
-                        size *= 1024 * 1024 * 1024;
-                        break;
-                    case 'T':
-                        size *= 1024 * 1024 * 1024 * 1024;
-                }
+                NSInteger length = [sizeString length];
+                if (length > 2)
+                    switch ([sizeString characterAtIndex:length - 2]) {
+                        case 'M':
+                            size *= 1024;
+                            break;
+                        case 'G':
+                            size *= 1024 * 1024;
+                            break;
+                        case 'T':
+                            size *= 1024 * 1024 * 1024;
+                    }
                 [data addObject:[[Entry alloc] initWithIndex:i data:@(size)]];
             }
             map = [data sortedArrayUsingComparator:^NSComparisonResult(Entry *a, Entry *b) {
