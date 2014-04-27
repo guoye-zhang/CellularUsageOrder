@@ -4,10 +4,8 @@
 @property(strong, nonatomic) NSString *identifier;
 @end
 
-@interface PSListController
+@interface PSListController : UITableViewController
 - (PSSpecifier *)specifier;
-- (NSInteger)numberOfSectionsInTableView:(id)view;
-- (id)tableView:(id)view cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @interface PSSubtitleSwitchTableCell

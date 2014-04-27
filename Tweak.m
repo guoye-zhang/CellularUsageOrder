@@ -3,7 +3,7 @@
 %hook PSListController
 
 NSArray *map;
-NSInteger count = 0;
+NSInteger count;
 
 - (NSInteger)tableView:(id)view numberOfRowsInSection:(NSInteger)section {
     NSInteger result = %orig(view, section);
@@ -17,7 +17,7 @@ NSInteger count = 0;
                 num = result - 2;
             NSMutableArray *data = [NSMutableArray arrayWithCapacity:num];
             for (NSInteger i = 0; i < num; i++) {
-                NSString *sizeString = [[(UITableViewCell *)[self tableView:view cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]] detailTextLabel] text];
+                NSString *sizeString = [self tableView:view cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]].detailTextLabel.text;
                 float size = [sizeString floatValue];
                 NSInteger length = [sizeString length];
                 if (length > 2)
