@@ -4,6 +4,7 @@
 
 NSArray *map;
 NSInteger count;
+BOOL enabled = YES;
 
 - (NSInteger)tableView:(id)view numberOfRowsInSection:(NSInteger)section {
     NSInteger result = %orig(view, section);
@@ -43,10 +44,18 @@ NSInteger count;
 }
 
 - (id)tableView:(id)view cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row < count && [[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == [self numberOfSectionsInTableView:view] - 2)
+    if (enabled && indexPath.row < count && [[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == [self numberOfSectionsInTableView:view] - 2)
         return %orig(view, [NSIndexPath indexPathForRow:((Entry *)map[indexPath.row]).index inSection:indexPath.section]);
     else
         return %orig(view, indexPath);
+}
+
+- (void)tableView:(id)view didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == [self numberOfSectionsInTableView:view] - 3) {
+        enabled = !enabled;
+        [view reloadData];
+    }
+    %orig;
 }
 
 %end
