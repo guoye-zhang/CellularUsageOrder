@@ -32,6 +32,15 @@ BOOL enabled = YES;
                         case 'T':
                             size *= 1024 * 1024 * 1024;
                     }
+                if (length > 3) {
+                    switch ([sizeString characterAtIndex:length - 3]) {
+                        case L'מ':
+                            size *= 1024;
+                            break;
+                        case L'ג':
+                            size *= 1024 * 1024;
+                    }
+                }
                 [data addObject:[[Entry alloc] initWithIndex:i data:@(size)]];
             }
             map = [data sortedArrayUsingComparator:^NSComparisonResult(Entry *a, Entry *b) {
