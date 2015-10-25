@@ -3,12 +3,23 @@
 %hook PSListController
 
 NSArray *map;
-NSInteger count;
+NSInteger count, cellularSectionNumber;
 BOOL enabled = YES;
 
+- (NSInteger)numberOfSectionsInTableView:(id)view {
+    NSInteger result = %orig;
+    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"]) {
+        if (![self tableView:view titleForHeaderInSection:result - 2])
+            cellularSectionNumber = result - 3;
+        else
+            cellularSectionNumber = result - 2;
+    }
+    return result;
+}
+
 - (NSInteger)tableView:(id)view numberOfRowsInSection:(NSInteger)section {
-    NSInteger result = %orig(view, section);
-    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && section == [self numberOfSectionsInTableView:view] - 2) {
+    NSInteger result = %orig;
+    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && section == cellularSectionNumber) {
         count = 0;
         if (result > 1) {
             NSInteger num;
@@ -53,14 +64,14 @@ BOOL enabled = YES;
 }
 
 - (id)tableView:(id)view cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (enabled && indexPath.row < count && [[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == [self numberOfSectionsInTableView:view] - 2)
+    if (enabled && indexPath.row < count && [[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == cellularSectionNumber)
         return %orig(view, [NSIndexPath indexPathForRow:((Entry *)map[indexPath.row]).index inSection:indexPath.section]);
     else
-        return %orig(view, indexPath);
+        return %orig;
 }
 
 - (void)tableView:(id)view didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == [self numberOfSectionsInTableView:view] - 3) {
+    if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"] && indexPath.section == cellularSectionNumber - 1) {
         enabled = !enabled;
         [view reloadData];
     }

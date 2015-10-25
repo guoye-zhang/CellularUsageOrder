@@ -1,7 +1,7 @@
 Package: com.ccdog.cellularusageorder
 Name: CellularUsageOrder
 Depends: firmware (>= 7.0), mobilesubstrate
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm
 Description: Order Cellular Data Usage by Size.
 Author: CC-Dog <cc941201@gmail.com>
