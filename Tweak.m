@@ -9,7 +9,7 @@ BOOL enabled = YES;
 - (NSInteger)numberOfSectionsInTableView:(id)view {
     NSInteger result = %orig;
     if ([[self specifier].identifier isEqualToString:@"MOBILE_DATA_SETTINGS_ID"]) {
-        if (![self tableView:view titleForHeaderInSection:result - 2])
+        if (result > 2 && ![self tableView:view titleForHeaderInSection:result - 2])
             cellularSectionNumber = result - 3;
         else
             cellularSectionNumber = result - 2;
